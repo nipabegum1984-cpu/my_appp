@@ -1,0 +1,9 @@
+{
+  "short_name": "Victory",
+  "name": "Radia Victory Center",
+  "display": "standalone",
+  "start_url": "index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5"
+}
+
