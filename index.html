@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4f46e5"> <title>Radia's Victory Center</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            background-color: #fdfbf7; 
+            color: #1e293b; 
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; /* মোবাইলে টাচ করলে নীল বক্স আসবে না */
+            user-select: none; /* অ্যাপ ফিল দেওয়ার জন্য টেক্সট সিলেক্ট অফ */
+        }
+
+        /* কার্ড এবং ডিজাইন */
+        .luxury-card { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; }
+        .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 20px; transition: width 0.8s ease-in-out; }
+        .daily-bar-inner { height: 100%; background: #10b981; border-radius: 20px; transition: width 0.5s ease; }
+        .tab-btn { font-size: 14px; font-weight: 800; padding: 10px 0; color: #94a3b8; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: #4f46e5; border-bottom: 4px solid #4f46e5; }
+        .checkbox-custom { width: 1.15rem; height: 1.15rem; accent-color: #4f46e5; cursor: pointer; }
+        .quote-box { border: 2.5px solid #000; box-shadow: 4px 4px 0px #000; border-radius: 10px; }
+        
+        /* বাটন এনিমেশন */
+        button:active { transform: scale(0.96); }
+        
+        /* স্ক্রলবার হাইড করা (অ্যাপ লুকে স্ক্রলবার দেখা যায় না) */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="pb-24">
+    <header class="sticky top-0 z-50 bg-white border-b-2 border-slate-200 p-4">
+        <div class="max-w-md mx-auto text-center">
+            <div class="quote-box bg-white p-3 mb-4">
+                <p class="font-black text-lg leading-tight italic text-indigo-700">"রাদিয়া, আজকের ১ ঘণ্টা পড়াশোনা কালকের এ প্লাস নিশ্চিত করবে!"</p>
+            </div>
+            <div class="space-y-3">
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-wider">সিলেবাস শেষ</span>
+                    <span id="global-perc" class="text-3xl font-black text-indigo-600 tracking-tighter">0%</span>
+                </div>
+                <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="global-bar" class="progress-bar-inner" style="width: 0%"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="luxury-card p-2.5 flex items-center space-x-2">
+                        <i class="fas fa-fire text-indigo-600 text-xs"></i>
+                        <div class="text-left">
+                            <p class="text-[9px] font-black text-slate-400 uppercase">পড়াশোনা</p>
+                            <h4 id="hrs-display" class="font-black text-xs">0h / 17h</h4>
+                        </div>
+                    </div>
+                    <div class="luxury-card p-2.5 flex items-center space-x-2">
+                        <i class="fas fa-hourglass-half text-rose-600 text-xs"></i>
+                        <div class="text-left">
+                            <p class="text-[9px] font-black text-slate-400 uppercase">এপ্রিল ৩০ বাকি</p>
+                            <h4 id="days-display" class="font-black text-xs">-- দিন</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4">
+        <nav class="flex mb-6 border-b-2 border-slate-100">
+            <button onclick="showSection('mission')" id="btn-mission" class="tab-btn active w-1/3">মিশন</button>
+            <button onclick="showSection('syllabus')" id="btn-syllabus" class="tab-btn w-1/3">সিলেবাস</button>
+            <button onclick="showSection('history')" id="btn-history" class="tab-btn w-1/3">ইতিহাস</button>
+        </nav>
+        
+        <div id="sec-mission" class="space-y-3">
+            <div id="daily-progress-container" class="luxury-card p-4 mb-4 border-emerald-100 bg-emerald-50/30">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-black text-[11px] text-emerald-700 uppercase">ডেইলি মিশন প্রগ্রেস</h3>
+                    <span id="daily-perc" class="font-black text-emerald-600 text-sm">0%</span>
+                </div>
+                <div class="h-1.5 bg-emerald-100 rounded-full overflow-hidden">
+                    <div id="daily-bar" class="daily-bar-inner" style="width: 0%"></div>
+                </div>
+            </div>
+            <div id="mission-items" class="space-y-3"></div>
+        </div>
+        
+        <div id="sec-syllabus" class="hidden space-y-3">
+            <div id="syllabus-list"></div>
+        </div>
+        
+        <div id="sec-history" class="hidden space-y-4">
+            <div class="luxury-card p-5">
+                <h3 class="font-black text-[10px] text-slate-400 mb-3 uppercase tracking-widest">পড়ার সময় সেভ কর</h3>
+                <div class="flex space-x-2">
+                    <input type="number" id="hr-input" placeholder="Hrs" class="w-full bg-slate-50 border-2 rounded-xl p-3 text-lg font-bold outline-none border-slate-200">
+                    <button onclick="saveHour()" class="bg-black text-white px-5 rounded-xl font-black text-[10px]">সেভ</button>
+                </div>
+            </div>
+            <div id="history-list" class="space-y-2"></div>
+        </div>
+    </main>
+
+    <script>
+        const subjects = {
+            "পদার্থবিজ্ঞান ১ম": ["ভৌত জগৎ ও পরিমাপ", "ভেক্টর", "গতিবিদ্যা", "নিউটনীয় বলবিদ্যা", "কাজ, শক্তি ও ক্ষমতা", "মহাকর্ষ ও অভিকর্ষ", "পদার্থের গাঠনিক ধর্ম", "পর্যায়বৃত্ত গতি", "তরঙ্গ", "আদর্শ গ্যাস ও গ্যাসের গতিতত্ত্ব"],
+            "পদার্থবিজ্ঞান ২য়": ["তাপগতিবিদ্যা", "স্থির তড়িৎ", "চল তড়িৎ", "তড়িৎ প্রবাহের চৌম্বক ক্রিয়া ও চুম্বকত্ব", "তড়িৎচৌম্বক আবেশ ও পরিবর্তী প্রবাহ", "জ্যামিতিক আলোকবিজ্ঞান", "ভৌত আলোকবিজ্ঞান", "আধুনিক পদার্থবিজ্ঞানের সূচনা", "পরমাণু মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান", "সেমিকন্ডাক্টর ও ইলেকট্রনিক্স"],
+            "রসায়ন ১ম": ["ল্যাবরেটরির নিরাপদ ব্যবহার", "গুণগত রসায়ন", "মৌলের পর্যায়বৃত্ত ধর্ম ও রাসায়নিক বন্ধন", "রাসায়নিক পরিবর্তন", "কর্মমুখী রসায়ন"],
+            "রসায়ন ২য়": ["পরিবেশ রসায়ন", "জৈব রসায়ন", "পরিমাণগত রসায়ন", "তড়িৎ রসায়ন", "অর্থনৈতিক রসায়ন"],
+            "জীববিজ্ঞান ১ম": ["কোষ ও এর গঠন", "কোষ বিভাজন", "কোষ রসায়ন", "অণুজীব", "শৈবাল ও ছত্রাক", "ব্রায়োফাইটা ও টেরিডোফাইটা", "নগ্নবীজী ও আবৃতবীজী উদ্ভিদ", "টিস্যু ও টিস্যুতন্ত্র", "উদ্ভিদ শারীরতত্ত্ব", "উদ্ভিদ প্রজনন", "জৈবপ্রযুক্তি", "জীবের পরিবেশ ও সংরক্ষণ"],
+            "জীববিজ্ঞান ২য়": ["প্রাণীর বিভিন্নতা ও শ্রেণিবিন্যাস", "প্রাণীর পরিচিতি", "পরিপাক ও শোষণ", "রক্ত ও সঞ্চালন", "শ্বসন ও শ্বাসক্রিয়া", "বর্জ্য ও নিষ্কাশন", "চলন ও অঙ্গচালনা", "সমন্বয় ও নিয়ন্ত্রণ", "প্রাণীর প্রজনন", "মানবদেহের প্রতিরক্ষা", "জিনতত্ত্ব ও বিবর্তন", "প্রাণীর আচরণ"],
+            "উচ্চতর গণিত ১ম": ["ম্যাট্রিক্স ও নির্ণায়ক", "ভেক্টর", "সরলরেখা", "বৃত্ত", "বিন্যাস ও সমাবেশ", "ত্রিকোণমিতিক অনুপাত", "সংযুক্ত কোণের ত্রিকোণমিতিক অনুপাত", "ফাংশন ও ফাংশনের লেখচিত্র", "অন্তরীকরণ", "যোগজীকরণ"],
+            "উচ্চতর গণিত ২য়": ["বাস্তব সংখ্যা ও অসমতা", "যোগাশ্রয়ী প্রোগ্রাম", "জটিল সংখ্যা", "বহুপদী ও বহুপদী সমীকরণ", "দ্বিপদী বিস্তৃতি", "কণিক", "বিপরীত ত্রিকোণমিতিক ফাংশন ও সমীকরণ", "স্থিতিবিদ্যা", "সমতলে বস্তুকণার গতি", "বিস্তার পরিমাপ ও সম্ভাবনা"],
+            "আইসিটি": ["তথ্য ও যোগাযোগ প্রযুক্তি: বিশ্ব ও বাংলাদেশ", "কমিউনিকেশন সিস্টেমস ও নেটওয়ার্কিং", "সংখ্যা পদ্ধতি ও ডিজিটাল ডিভাইস", "ওয়েব ডিজাইন ও HTML", "প্রোগ্রামিং ভাষা (C)", "ডেটাবেজ ম্যানেজমেন্ট সিস্টেম"],
+            "বাংলা ১ম": ["অপরিচিতা", "বিলাসী", "আমার পথ", "মানব-কল্যাণ", "মাসি-পিসি", "বায়ান্নর দিনগুলো", "রেইনকোট", "বিদ্রোহী", "সোনার তরী", "প্রতিদান", "তাহারেই পড়ে মনে", "আঠারো বছর বয়স", "ফেব্রুয়ারি ১৯৬৯", "আমি কিংবদন্তির কথা বলছি", "লালসালু (উপন্যাস)", "সিরাজউদ্দৌলা (নাটক)"],
+            "বাংলা ২য়": ["বাংলা উচ্চারণের নিয়ম", "বাংলা বানানের নিয়ম", "ব্যাকরণিক শব্দশ্রেণি", "শব্দ গঠন (উপসর্গ ও সমাস)", "বাক্যতত্ত্ব", "বাংলা ভাষার অপপ্রয়োগ ও শুদ্ধ প্রয়োগ", "পারিভাষিক শব্দ / অনুবাদ", "দিনলিপি লিখন / প্রতিবেদন রচনা", "বৈদ্যুতিন চিঠি / আবেদনপত্র", "সারাংশ / সারমর্ম", "ভাব-সম্প্রসারণ", "সংলাপ / ক্ষুদে গল্প", "প্রবন্ধ রচনা"],
+            "English 1st": ["Multiple Choice Questions (MCQ)", "Answering Questions", "Information Transfer / Flow Chart", "Summary Writing", "Cloze Test with Clues", "Cloze Test without Clues", "Rearranging Sentences", "Writing Paragraph", "Completing Story", "Informal Letter Writing"],
+            "English 2nd": ["Prepositions", "Special Use of Words/Phrases", "Completing Sentences", "Right Form of Verbs", "Narrative Style", "Modifiers", "Sentence Connectors", "Synonym & Antonym", "Punctuation", "Formal Letter/Email", "Report Writing", "Paragraph Writing"]
+        };
+
+        const STORAGE_KEY = 'radia_hsc_final_master_v30';
+        let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { missions: [], done: {}, hours: [] };
+
+        function updateDB() { 
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); 
+            renderAll(); 
+        }
+
+        function getFormattedDate() {
+            const date = new Date();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            return `${date.getDate()} ${months[date.getMonth()]}`;
+        }
+
+        function renderAll() {
+            let total = 0, finished = 0;
+            Object.entries(subjects).forEach(([sub, chs]) => {
+                const hasFour = sub.includes('পদার্থ') || sub.includes('রসায়ন') || sub.includes('জীববিজ্ঞান') || sub.includes('গণিত') || sub.includes('আইসিটি');
+                total += chs.length * (hasFour ? 4 : 1);
+            });
+            Object.values(db.done).forEach(arr => finished += arr.length);
+            const p = Math.round((finished / total) * 100) || 0;
+            document.getElementById('global-perc').innerText = p + '%';
+            document.getElementById('global-bar').style.width = p + '%';
+            
+            const targetDate = new Date("2026-04-30");
+            const diffDays = Math.ceil((targetDate - new Date()) / 86400000);
+            document.getElementById('days-display').innerText = (diffDays > 0 ? diffDays : 0) + " দিন";
+            
+            const today = getFormattedDate();
+            const todayEntry = db.hours.find(h => h.date === today);
+            document.getElementById('hrs-display').innerText = (todayEntry ? todayEntry.val : 0) + "h / 17h";
+            
+            renderMissions();
+        }
+
+        function showSection(s) {
+            ['mission', 'syllabus', 'history'].forEach(x => {
+                document.getElementById('sec-'+x).classList.toggle('hidden', x !== s);
+                document.getElementById('btn-'+x).classList.toggle('active', x === s);
+            });
+            if(s === 'syllabus') renderSyllabus();
+            if(s === 'history') renderHistory();
+        }
+
+        function renderSyllabus() {
+            const list = document.getElementById('syllabus-list');
+            list.innerHTML = Object.entries(subjects).map(([sub, chs]) => `
+                <div class="mb-2">
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-full luxury-card p-3 text-left font-black flex justify-between items-center border-l-4 border-indigo-600 text-[10px] uppercase">
+                        ${sub} <i class="fas fa-chevron-down opacity-30 text-[8px]"></i>
+                    </button>
+                    <div class="hidden mt-2 space-y-1.5 px-1">
+                        ${chs.map((ch, idx) => {
+                            const key = `${sub}_${idx}`, prg = db.done[key] || [];
+                            const hasFour = sub.includes('পদার্থ') || sub.includes('রসায়ন') || sub.includes('জীববিজ্ঞান') || sub.includes('গণিত') || sub.includes('আইসিটি');
+                            const options = hasFour ? ['ক-খ', 'MCQ', 'YT', 'CQ'] : ['Done'];
+                            
+                            return `<div class="luxury-card p-2 border-l-2 border-slate-300">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-[11px] text-slate-700">${ch}</h4>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5">
+                                    ${options.map((opt, i) => {
+                                        const isDone = prg.includes(i);
+                                        return `<div class="flex items-center justify-between bg-slate-50 p-1 rounded border border-slate-100">
+                                            <label class="flex items-center space-x-1 cursor-pointer">
+                                                <input type="checkbox" class="checkbox-custom" onchange="toggleP('${key}', ${i})" ${isDone?'checked':''}>
+                                                <span class="text-[9px] font-bold">${opt}</span>
+                                            </label>
+                                            ${!isDone ? `<button onclick="addMissionPart('${sub}', '${ch}', '${opt}', '${key}', ${i})" class="text-indigo-600 font-black text-[7px] bg-white px-1 border border-indigo-200 rounded">Add+</button>` : ''}
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        function toggleP(key, step) {
+            if(!db.done[key]) db.done[key] = [];
+            const idx = db.done[key].indexOf(step);
+            if(idx > -1) db.done[key].splice(idx, 1); else db.done[key].push(step);
+            updateDB();
+            if(!document.getElementById('sec-syllabus').classList.contains('hidden')) renderSyllabus();
+        }
+
+        function addMissionPart(sub, ch, part, key, step) {
+            const mKey = `${key}_${step}`;
+            if(!db.missions.some(m => m.mKey === mKey)) {
+                db.missions.push({ sub, ch, part, key, step, mKey, isDone: false });
+                updateDB();
+                showSection('mission');
+            }
+        }
+
+        function renderMissions() {
+            const list = document.getElementById('mission-items');
+            const total = db.missions.length;
+            const done = db.missions.filter(m => m.isDone).length;
+            const perc = total > 0 ? Math.round((done/total)*100) : 0;
+            
+            document.getElementById('daily-perc').innerText = perc + '%';
+            document.getElementById('daily-bar').style.width = perc + '%';
+
+            if(total === 0) { 
+                list.innerHTML = `<div class="text-center py-20 text-slate-300 font-black uppercase text-[10px] tracking-widest">সিলেবাস থেকে মিশন এড কর!</div>`; 
+                return; 
+            }
+
+            list.innerHTML = db.missions.map((m, i) => `
+                <div class="luxury-card p-3 flex items-center justify-between border-l-[6px] ${m.isDone ? 'border-emerald-500 bg-emerald-50 opacity-60' : 'border-indigo-600 shadow-sm'}">
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" class="checkbox-custom" onchange="toggleM(${i})" ${m.isDone ? 'checked' : ''}>
+                        <div>
+                            <p class="text-[7px] font-black text-indigo-400 uppercase tracking-wider">${m.sub}${m.part !== 'Done' ? ' • ' + m.part : ''}</p>
+                            <h3 class="font-black text-xs ${m.isDone ? 'line-through text-slate-400' : 'text-slate-800'}">${m.ch}</h3>
+                        </div>
+                    </div>
+                    <button onclick="delM(${i})" class="text-slate-400"><i class="fas fa-trash-alt text-[10px]"></i></button>
+                </div>`).join('');
+        }
+
+        function toggleM(i) {
+            const m = db.missions[i];
+            m.isDone = !m.isDone;
+            if(m.isDone) {
+                if(!db.done[m.key]) db.done[m.key] = [];
+                if(!db.done[m.key].includes(m.step)) db.done[m.key].push(m.step);
+            } else {
+                if(db.done[m.key]) {
+                    const idx = db.done[m.key].indexOf(m.step);
+                    if(idx > -1) db.done[m.key].splice(idx, 1);
+                }
+            }
+            updateDB();
+        }
+
+        function delM(i) { db.missions.splice(i, 1); updateDB(); }
+
+        function saveHour() {
+            const h = parseFloat(document.getElementById('hr-input').value);
+            if(isNaN(h)) return;
+            const date = getFormattedDate();
+            const existing = db.hours.find(item => item.date === date);
+            if(existing) existing.val = h; else db.hours.push({date, val: h});
+            document.getElementById('hr-input').value = '';
+            updateDB(); renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = [...db.hours].reverse().map(item => `<div class="luxury-card p-3 flex justify-between items-center"><span class="text-slate-500 font-black text-[9px] uppercase tracking-wider">${item.date}</span><span class="text-indigo-600 font-black text-lg">${item.val}h</span></div>`).join('');
+        }
+        
+        window.onload = renderAll;
+    </script>
+</body>
+</html>
